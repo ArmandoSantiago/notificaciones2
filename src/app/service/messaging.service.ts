@@ -8,17 +8,19 @@ export class MessagingService {
 
   constructor(private angularFireMessaging: AngularFireMessaging) {
     this.angularFireMessaging.messages.subscribe(
-      // tslint:disable-next-line:variable-name
-      (_messaging: AngularFireMessaging) => {
-        _messaging.onMessage = _messaging.onMessage.bind(_messaging);
-        _messaging.onTokenRefresh = _messaging.onTokenRefresh.bind(_messaging);
+      (fireMessaging: AngularFireMessaging) => {
+        fireMessaging.onMessage = fireMessaging.onMessage.bind(fireMessaging);
+        fireMessaging.onTokenRefresh = fireMessaging.onTokenRefresh.bind(fireMessaging);
       });
   }
 
   requestPermission = () => {
     this.angularFireMessaging.requestToken.subscribe(
       (token) => {
-        console.log(token);
+        // console.log(token);
+        // TODO
+        // Relacinar con el user
+        localStorage.setItem('tokenNotification', token);
       },
       (err) => {
         console.error('Unable to get permission to notify.', err);
@@ -28,8 +30,8 @@ export class MessagingService {
 
   receiveMessage = () => {
     this.angularFireMessaging.messages.subscribe(
-      (payload) => {
-        console.log('new message received. ', payload);
+      (payload: any) => {
+        alert(payload.notification.body);
         this.currentMessage.next(payload);
       });
   }
